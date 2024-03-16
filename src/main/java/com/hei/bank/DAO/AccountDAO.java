@@ -5,6 +5,7 @@ import com.hei.bank.model.Account;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 public class AccountDAO{
 
@@ -16,7 +17,7 @@ public class AccountDAO{
         return autoCrudOp.findAll();
     }
 
-    public Account findById(int id) throws SQLException {
+    public Account findById(UUID id) throws SQLException {
         AutoCrudOperation<Account> AutoCrudOperation = new AutoCrudOperation<>(Account.class);
         return AutoCrudOperation.findById(id);
     }
