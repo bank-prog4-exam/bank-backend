@@ -2,6 +2,8 @@ package com.hei.bank.DAO;
 
 import com.hei.bank.configuration.ConnectionDB;
 import com.hei.bank.model.Account;
+import com.hei.bank.model.AccountStatement;
+import com.hei.bank.model.Transaction;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,6 +27,32 @@ public class AccountDAO{
     public Account save(Account account) {
         AutoCrudOperation<Account> AutoCrudOperation = new AutoCrudOperation<>(Account.class);
         return AutoCrudOperation.save(account);
+    }
+
+    //==================================Do transaction==================================
+    public AccountStatement doTransaction (Transaction transaction, UUID accountStatementId) throws SQLException {
+        AccountStatementDAO accountStatementDAO = new AccountStatementDAO();
+        AccountStatement accountStatement = accountStatementDAO.findById(accountStatementId);
+
+        if(transaction.getTransactionType().equals("debit")){
+            if (accountStatement.getPrincipalBalance()-transaction.getTransactionAmount()<0){
+                accountStatement.setPrincipalBalance(accountStatement.getPrincipalBalance()-transaction.getTransactionAmount());
+            }
+            else {
+                throw new RuntimeException("Transaction failed");
+            }
+        }
+        else if(transaction.getTransactionType().equals("credit")){
+            accountStatement.setPrincipalBalance(accountStatement.getPrincipalBalance()+transaction.getTransactionAmount());
+        }
+        else {
+            throw new RuntimeException("Transaction failed");
+        }
+        AccountStatementDAO accountStatementDAO1 = new AccountStatementDAO();
+        accountStatementDAO1.save(accountStatement);
+        TransactionDAO transactionDAO = new TransactionDAO();
+        transactionDAO.save(transaction);
+        return accountStatement;
     }
 
 }
