@@ -19,4 +19,5 @@ public class Account {
     private Double monthlyNetSalary;
     private String uniqueAccountNumber;
     private Boolean overdraftStatus;
+    private Double principalBalance;
 }

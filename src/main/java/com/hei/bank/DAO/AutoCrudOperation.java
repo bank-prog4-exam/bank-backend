@@ -244,6 +244,8 @@ public class AutoCrudOperation<T> {
                     field.set(entity, resultSet.getString(columnName));
                 } else if (field.getType() == double.class || field.getType() == Double.class) {
                     field.set(entity, resultSet.getDouble(columnName));
+                } else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+                    field.set(entity, resultSet.getBoolean(columnName));
                 } else if (field.getType() == Timestamp.class) {
                     field.set(entity, resultSet.getTimestamp(columnName));
                 } else if (field.getType() == UUID.class) {
@@ -258,6 +260,7 @@ public class AutoCrudOperation<T> {
         }
         return entity;
     }
+
 
     private List<Integer> fetchListFromDatabase(String columnName, ResultSet resultSet) throws SQLException {
 

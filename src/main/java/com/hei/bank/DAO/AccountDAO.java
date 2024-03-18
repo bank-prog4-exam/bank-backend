@@ -53,7 +53,32 @@ public class AccountDAO{
         transactionDAO.save(transaction);
         return accountStatement;
     }
+    public Account getAccountBalance (Timestamp timestamp, UUID accountId) throws SQLException {
+        AccountDAO accountDAO = new AccountDAO();
+        Account account = accountDAO.findById(accountId);
+        List<String> currentTransactionIdList = new ArrayList<>();
+        List<String> transactionIdList = getAllTransaction(accountId);
 
+        for (String transactionId : transactionIdList) {
+
+            currentTransactionIdList.add(transactionId);
+            TransactionDAO transactionDAO = new TransactionDAO();
+            Transaction currentTransaction = transactionDAO.findById(UUID.fromString(transactionId));
+
+            Timestamp currentTransactionTimestamp = currentTransaction.getEffectiveDate();
+
+            if (timestamp.after(currentTransactionTimestamp) || timestamp.equals(currentTransactionTimestamp)) {
+                if (currentTransaction.getTransactionType().equals("credit")) {
+                    account.setPrincipalBalance(account.getPrincipalBalance() + currentTransaction.getTransactionAmount());
+                } else if (currentTransaction.getTransactionType().equals("debit")) {
+                    account.setPrincipalBalance(account.getPrincipalBalance() - currentTransaction.getTransactionAmount());
+                }
+            } else {
+                break;
+            }
+        }
+        return account;
+    }
 
     public List<String> getAllTransaction(UUID accountId) throws SQLException {
         String SELECT_QUERY = "SELECT id FROM transaction WHERE id_account = ?";

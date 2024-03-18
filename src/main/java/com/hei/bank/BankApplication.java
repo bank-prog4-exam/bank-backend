@@ -18,11 +18,11 @@ public class BankApplication {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
 		AccountDAO accountDAO = new AccountDAO();
 //		UUID uuid = UUID.randomUUID();
-//		Instant instant = Instant.now();
+		Instant instant = Instant.now();
 //		UUID idAccount = UUID.fromString("5e6f984c-12b2-4b7b-b628-959811ca07b4");
 //		Instant instant1 = Instant.parse("2024-03-01T10:00:00Z");
 //		Timestamp timestamp2 =Timestamp.from(instant1);
-//		Timestamp timestamp = Timestamp.from(instant);
+		Timestamp timestamp = Timestamp.from(instant);
 //		//Do transaction
 //		Transaction transaction = new Transaction(
 //				uuid,
@@ -34,8 +34,9 @@ public class BankApplication {
 //				timestamp
 //		);
 //		System.out.println(accountDAO.doTransaction(transaction, uuid));
+
 		UUID id = UUID.fromString("5e6f984c-12b2-4b7b-b628-959811ca07b4");
-		System.out.println(accountDAO.getAllTransaction(id));
+		System.out.println(accountDAO.getAccountBalance(timestamp, id));
 	}
 
 }
