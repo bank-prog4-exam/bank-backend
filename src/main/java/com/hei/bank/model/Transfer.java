@@ -20,4 +20,6 @@ public class Transfer {
     private Timestamp effectiveDate;
     private Timestamp registrationDate;
     private String status;
+    private String label;
+    private String reference;
 }

@@ -16,6 +16,7 @@ public class AccountStatement {
     private UUID idAccount;
     private String operationMotive;
     private Double operationAmount;
+    private String operationType;
     private Timestamp effective_date;
     private Double principalBalance;
 }

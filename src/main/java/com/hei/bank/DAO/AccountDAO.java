@@ -55,4 +55,28 @@ public class AccountDAO{
     }
 
 
+    public List<String> getAllTransaction(UUID accountId) throws SQLException {
+        String SELECT_QUERY = "SELECT id FROM transaction WHERE id_account = ?";
+        List<String> result = new ArrayList<>();
+
+        try (
+                Connection connection = connectionDB.getConnection();
+                PreparedStatement statement = connection.prepareStatement(SELECT_QUERY);
+        ){
+            statement.setObject(1, accountId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    result.add(resultSet.getString("id"));
+                    while (resultSet.next()) {
+                        result.add(resultSet.getString("id"));
+                    }
+                } else {
+                    throw new SQLException("No transaction found for account: " + accountId);
+                }
+            }
+        }
+
+        return result;
+    }
+
 }
