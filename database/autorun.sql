@@ -29,11 +29,9 @@ CREATE TABLE "transaction" (
 
 CREATE TABLE overdraft_interest (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    id_account UUID,
     interest_rate_first_days DOUBLE PRECISION,
     interest_rate_after_days DOUBLE PRECISION,
-    modification_date TIMESTAMP,
-    FOREIGN KEY (id_account) REFERENCES account(id)
+    modification_date TIMESTAMP
 );
 
 CREATE TABLE transfer (
