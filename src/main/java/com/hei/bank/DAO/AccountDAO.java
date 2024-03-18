@@ -29,30 +29,39 @@ public class AccountDAO{
     }
 
     //==================================Do transaction==================================
-    public AccountStatement doTransaction (Transaction transaction, UUID accountStatementId) throws SQLException {
-        AccountStatementDAO accountStatementDAO = new AccountStatementDAO();
-        AccountStatement accountStatement = accountStatementDAO.findById(accountStatementId);
+    public Account doTransaction(Transaction transaction, UUID accountId) {
+        try {
+            AccountDAO accountDAO = new AccountDAO();
+            Account account = accountDAO.findById(accountId);
 
-        if(transaction.getTransactionType().equals("debit")){
-            if (accountStatement.getPrincipalBalance()-transaction.getTransactionAmount()<0){
-                accountStatement.setPrincipalBalance(accountStatement.getPrincipalBalance()-transaction.getTransactionAmount());
+            if ("debit".equals(transaction.getTransactionType())) {
+                if (account.getPrincipalBalance() - transaction.getTransactionAmount() >= 0) {
+                    account.setPrincipalBalance(account.getPrincipalBalance() - transaction.getTransactionAmount());
+                } else if(account.getPrincipalBalance() - transaction.getTransactionAmount()<0){
+                    Double loan = (account.getPrincipalBalance() - transaction.getTransactionAmount())*(-1);
+                    Double overdraftAmount = account.getMonthlyNetSalary()/3;
+                    if (account.getOverdraftStatus().equals(Boolean.TRUE) && loan <= overdraftAmount){
+                        account.setPrincipalBalance(account.getPrincipalBalance() - transaction.getTransactionAmount());
+                    }
+                    else throw new  RuntimeException("Your account is not active for overdraft or loan amount permission is too low for this transacion amount");
+                }
+            } else if ("credit".equals(transaction.getTransactionType())) {
+                account.setPrincipalBalance(account.getPrincipalBalance() + transaction.getTransactionAmount());
+            } else {
+                throw new RuntimeException("Invalid transaction type");
             }
-            else {
-                throw new RuntimeException("Transaction failed");
-            }
+
+            accountDAO.save(account);
+
+            TransactionDAO transactionDAO = new TransactionDAO();
+            transactionDAO.save(transaction);
+
+            return account;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error occurred while performing transaction", e);
         }
-        else if(transaction.getTransactionType().equals("credit")){
-            accountStatement.setPrincipalBalance(accountStatement.getPrincipalBalance()+transaction.getTransactionAmount());
-        }
-        else {
-            throw new RuntimeException("Transaction failed");
-        }
-        AccountStatementDAO accountStatementDAO1 = new AccountStatementDAO();
-        accountStatementDAO1.save(accountStatement);
-        TransactionDAO transactionDAO = new TransactionDAO();
-        transactionDAO.save(transaction);
-        return accountStatement;
     }
+
     public Account getAccountBalance (Timestamp timestamp, UUID accountId) throws SQLException {
         AccountDAO accountDAO = new AccountDAO();
         Account account = accountDAO.findById(accountId);

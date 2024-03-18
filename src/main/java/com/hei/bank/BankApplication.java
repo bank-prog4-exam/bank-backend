@@ -15,28 +15,39 @@ import java.util.UUID;
 @SpringBootApplication
 public class BankApplication {
 
-	public static void main(String[] args) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+	public static void main(String[] args) {
 		AccountDAO accountDAO = new AccountDAO();
-//		UUID uuid = UUID.randomUUID();
-		Instant instant = Instant.now();
-//		UUID idAccount = UUID.fromString("5e6f984c-12b2-4b7b-b628-959811ca07b4");
-//		Instant instant1 = Instant.parse("2024-03-01T10:00:00Z");
-//		Timestamp timestamp2 =Timestamp.from(instant1);
-		Timestamp timestamp = Timestamp.from(instant);
-//		//Do transaction
-//		Transaction transaction = new Transaction(
-//				uuid,
-//				idAccount,
-//				300.00,
-//				"credit",
-//				"monthly salary",
-//				timestamp2,
-//				timestamp
-//		);
-//		System.out.println(accountDAO.doTransaction(transaction, uuid));
+		UUID accountId = UUID.fromString("7b9fb905-dad8-43fa-bfb3-8d72c458337f");
+		double transactionAmount = 3000.00;
+		String transactionType = "debit";
+		String reason = "monthly salary";
+		Instant effectiveInstant = Instant.parse("2024-03-01T10:00:00Z");
+		Timestamp effectiveDate = Timestamp.from(effectiveInstant);
+		Timestamp registrationDate = Timestamp.from(Instant.now());
 
-		UUID id = UUID.fromString("5e6f984c-12b2-4b7b-b628-959811ca07b4");
-		System.out.println(accountDAO.getAccountBalance(timestamp, id));
+		Transaction transaction = new Transaction(
+				UUID.randomUUID(), // Nouvel identifiant de transaction
+				accountId,
+				transactionAmount,
+				transactionType,
+				reason,
+				effectiveDate,
+				registrationDate
+		);
+
+		try {
+			System.out.println("Before transaction:");
+			System.out.println(accountDAO.findById(accountId));
+
+			// Effectuer la transaction
+			Account updatedAccount = accountDAO.doTransaction(transaction, accountId);
+
+			System.out.println("After transaction:");
+			System.out.println(updatedAccount);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
+
 
 }
