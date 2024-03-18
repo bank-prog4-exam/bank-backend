@@ -2,11 +2,13 @@ package com.hei.bank.DAO;
 
 import com.hei.bank.configuration.ConnectionDB;
 import com.hei.bank.model.AccountStatement;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public class AccountStatementDAO {
     public AccountStatementDAO() {
         ConnectionDB connectionDB = new ConnectionDB();

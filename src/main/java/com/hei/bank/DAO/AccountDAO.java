@@ -4,12 +4,14 @@ import com.hei.bank.configuration.ConnectionDB;
 import com.hei.bank.model.Account;
 import com.hei.bank.model.AccountStatement;
 import com.hei.bank.model.Transaction;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public class AccountDAO{
 
     private final ConnectionDB connectionDB = new ConnectionDB();
@@ -29,10 +31,10 @@ public class AccountDAO{
     }
 
     //==================================Do transaction==================================
-    public Account doTransaction(Transaction transaction, UUID accountId) {
+    public Account doTransaction(Transaction transaction) {
         try {
             AccountDAO accountDAO = new AccountDAO();
-            Account account = accountDAO.findById(accountId);
+            Account account = accountDAO.findById(transaction.getIdAccount());
 
             if ("debit".equals(transaction.getTransactionType())) {
                 if (account.getPrincipalBalance() - transaction.getTransactionAmount() >= 0) {
