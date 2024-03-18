@@ -1,8 +1,6 @@
 package com.hei.bank.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -10,6 +8,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @Setter
 @Getter
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Transaction {
     private UUID id;
     private UUID idAccount;

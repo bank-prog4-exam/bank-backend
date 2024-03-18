@@ -1,15 +1,16 @@
 package com.hei.bank.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.UUID;
 
-@Getter
-@Setter
 @AllArgsConstructor
+@Setter
+@Getter
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Transfer {
     private UUID id;
     private UUID idSenderAccount;

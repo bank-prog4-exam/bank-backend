@@ -26,7 +26,7 @@ public class AutoCrudOperation<T> {
         List<String> attributes = getAttributes();
 
         FIND_ALL_QUERY = FIND_ALL_QUERY.replace("{COLUMNS}", String.join(", ", attributes)).replace("{TABLE}", table);
-
+        System.out.println(FIND_ALL_QUERY);
         List<T> result = new ArrayList<>();
 
         try (
@@ -51,7 +51,7 @@ public class AutoCrudOperation<T> {
 
     public T findById(UUID uuid) throws SQLException{
 
-        String FIND_BY_ID_QUERY = "SELECT {COLUMNS} FROM {TABLE} WHERE id = {ID}";
+        String FIND_BY_ID_QUERY = "SELECT {COLUMNS} FROM {TABLE} WHERE id = '{ID}'";
 
         String table = camelToSnakeCase(entityClass.getSimpleName());
         String strId = String.valueOf(uuid);
@@ -79,8 +79,8 @@ public class AutoCrudOperation<T> {
     public T save(T toSave) {
 
         String INSERT_QUERY = "INSERT INTO {TABLE} ({INSERT_COLUMNS}) VALUES ({VALUES})";
-        String UPDATE_QUERY = "UPDATE {TABLE} SET {VALUES} WHERE id = {ID}";
-        String FIND_BY_ID_QUERY = "SELECT {COLUMNS} FROM {TABLE} WHERE id = {ID}";
+        String UPDATE_QUERY = "UPDATE {TABLE} SET {VALUES} WHERE id = '{ID}'";
+        String FIND_BY_ID_QUERY = "SELECT {COLUMNS} FROM {TABLE} WHERE id = '{ID}'";
 
         String table = camelToSnakeCase(entityClass.getSimpleName());
         List<String> attributes = getAttributes();
@@ -97,10 +97,10 @@ public class AutoCrudOperation<T> {
 
         try {
             Field toSaveIdField = entityClass.getDeclaredField("id");
-            Field name = entityClass.getDeclaredField("transactionsId");
+
 
             toSaveIdField.setAccessible(true);
-            name.setAccessible(true);
+
             toSaveId = toSaveIdField.get(toSave).toString();
 
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -194,11 +194,15 @@ public class AutoCrudOperation<T> {
 
         for (Field field : fields) {
             try {
-                    field.setAccessible(true);
-                    Object value = field.get(toSave);
+                field.setAccessible(true);
+                Object value = field.get(toSave);
+                if (value instanceof UUID) {
+                    values.append("'").append(value).append("', ");
+                } else {
                     values.append(getFormattedValue(value)).append(", ");
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
         if (values.length() > 0) {
@@ -206,6 +210,7 @@ public class AutoCrudOperation<T> {
         }
         return  values.toString();
     }
+
 
 
     private List<String> getAttributes() {
@@ -241,6 +246,8 @@ public class AutoCrudOperation<T> {
                     field.set(entity, resultSet.getDouble(columnName));
                 } else if (field.getType() == Timestamp.class) {
                     field.set(entity, resultSet.getTimestamp(columnName));
+                } else if (field.getType() == UUID.class) {
+                    field.set(entity, UUID.fromString(resultSet.getString(columnName)));
                 } else if (field.getType() == List.class) {
                     List<Integer> list = fetchListFromDatabase(columnName, resultSet);
                     field.set(entity, list);

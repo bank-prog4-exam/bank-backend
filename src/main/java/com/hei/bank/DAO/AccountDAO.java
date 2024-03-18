@@ -5,15 +5,14 @@ import com.hei.bank.model.Account;
 import com.hei.bank.model.AccountStatement;
 import com.hei.bank.model.Transaction;
 
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class AccountDAO{
 
-    public AccountDAO() {
-        ConnectionDB connectionDB = new ConnectionDB();
-    }
+    private final ConnectionDB connectionDB = new ConnectionDB();
     public List<Account> findAll() throws SQLException {
         AutoCrudOperation<Account> autoCrudOp = new AutoCrudOperation<>(Account.class);
         return autoCrudOp.findAll();
@@ -54,5 +53,6 @@ public class AccountDAO{
         transactionDAO.save(transaction);
         return accountStatement;
     }
+
 
 }
