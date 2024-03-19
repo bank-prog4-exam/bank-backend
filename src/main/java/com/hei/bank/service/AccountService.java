@@ -6,6 +6,7 @@ import com.hei.bank.model.Transaction;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,5 +36,13 @@ public class AccountService implements EntityServices<Account> {
 
     public Account doTransaction(Transaction transaction) throws SQLException{
         return accountDAO.doTransaction(transaction);
+    }
+
+    public List<String> getAllTransaction(UUID id) throws SQLException{
+        return accountDAO.getAllTransaction(id);
+    }
+
+    public Account getAccountBalance(Timestamp timestamp, UUID accountId) throws SQLException{
+        return accountDAO.getAccountBalance(timestamp, accountId);
     }
 }

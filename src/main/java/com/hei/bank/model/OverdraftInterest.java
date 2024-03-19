@@ -13,8 +13,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class OverdraftInterest {
     private UUID id;
-    private UUID idAccount;
     private Double InterestRateFirstDays;
-    private Double InterestRateLastDays;
+    private Double InterestRateAfterDays;
     private Timestamp modificationDate;
 }

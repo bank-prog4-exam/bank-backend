@@ -6,6 +6,7 @@ import com.hei.bank.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,5 +35,14 @@ public class AccountController {
     @PutMapping("/do_transaction")
     public Account doTransaction(@RequestBody Transaction transaction) throws SQLException {
         return accountService.doTransaction(transaction);
+    }
+    @GetMapping("/all_transactions/{id}")
+    public List<String> getAllTransaction(@PathVariable UUID id) throws SQLException{
+        return accountService.getAllTransaction(id);
+    }
+
+    @GetMapping("/account_balance/{id}/{timestamp}")
+    public Account getAccountBalance(@PathVariable Timestamp timestamp, @PathVariable UUID id) throws SQLException{
+        return accountService.getAccountBalance(timestamp,id);
     }
 }

@@ -3,6 +3,7 @@ package com.hei.bank.DAO;
 import com.hei.bank.configuration.ConnectionDB;
 import com.hei.bank.model.Account;
 import com.hei.bank.model.AccountStatement;
+import com.hei.bank.model.OverdraftInterest;
 import com.hei.bank.model.Transaction;
 import org.springframework.stereotype.Repository;
 
