@@ -1,0 +1,704 @@
+openapi: 3.0.0
+info:
+  title: Virtual Bank API
+  description: API for managing virtual bank accounts and transactions
+  version: 1.0.0
+servers:
+  - url: https://virtualbank.server/v1
+paths:
+  /all_accounts:
+    get:
+      summary: Retrieve all accounts
+      tags:
+        - Accounts
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountsResponse'
+  /account/{id}:
+    get:
+      summary: Retrieve account by ID
+      tags:
+        - Accounts
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '404':
+          $ref: '#/components/responses/AccountNotFound'
+  /new_account:
+    post:
+      summary: Create a new account
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountInput'
+      responses:
+        '201':
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+  /update_account/{id}:
+    put:
+      summary: Update account information
+      tags:
+        - Accounts
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountInput'
+      responses:
+        '200':
+          description: Account updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '404':
+          $ref: '#/components/responses/AccountNotFound'
+  /delete_account/{id}:
+    delete:
+      summary: Delete an account
+      tags:
+        - Accounts
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      responses:
+        '204':
+          description: Account deleted successfully
+        '404':
+          $ref: '#/components/responses/AccountNotFound'
+  /withdrawal:
+    put:
+      summary: Withdraw money from an account
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawalInput'
+      responses:
+        '200':
+          description: Withdrawal successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+  /all_account_statements:
+    get:
+      summary: Retrieve all account statements
+      tags:
+        - Statements
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountStatementsResponse'
+  /account_statement/{id}:
+    get:
+      summary: Retrieve account statement by ID
+      tags:
+        - Statements
+      parameters:
+        - $ref: '#/components/parameters/StatementId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountStatement'
+        '404':
+          $ref: '#/components/responses/StatementNotFound'
+  /new_account_statement:
+    post:
+      summary: Create a new account statement
+      tags:
+        - Statements
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountStatementInput'
+      responses:
+        '201':
+          description: Account statement created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountStatement'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+  /all_overdraft_interests:
+    get:
+      summary: Retrieve all overdraft interests
+      tags:
+        - Overdraft
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverdraftInterestsResponse'
+  /overdraft_interest/{id}:
+    get:
+      summary: Retrieve overdraft interest by ID
+      tags:
+        - Overdraft
+      parameters:
+        - $ref: '#/components/parameters/InterestId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverdraftInterest'
+        '404':
+          $ref: '#/components/responses/InterestNotFound'
+  /new_overdraft_interest:
+    post:
+      summary: Create a new overdraft interest
+      tags:
+        - Overdraft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OverdraftInterestInput'
+      responses:
+        '201':
+          description: Overdraft interest created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverdraftInterest'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+  /all_transfers:
+    get:
+      summary: Retrieve all transfers
+      tags:
+        - Transfers
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransfersResponse'
+  /transfer/{id}:
+    get:
+      summary: Retrieve transfer by ID
+      tags:
+        - Transfers
+      parameters:
+        - $ref: '#/components/parameters/TransferId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '404':
+          $ref: '#/components/responses/TransferNotFound'
+  /new_transfer:
+    post:
+      summary: Create a new transfer
+      tags:
+        - Transfers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferInput'
+      responses:
+        '201':
+          description: Transfer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+  /update_transfer/{id}:
+    put:
+      summary: Update transfer by ID
+      tags:
+        - Transfers
+      parameters:
+        - $ref: '#/components/parameters/TransferId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferInput'
+      responses:
+        '200':
+          description: Transfer updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '404':
+          $ref: '#/components/responses/TransferNotFound'
+  /delete_transfer/{id}:
+    delete:
+      summary: Delete transfer by ID
+      tags:
+        - Transfers
+      parameters:
+        - $ref: '#/components/parameters/TransferId'
+      responses:
+        '204':
+          description: Transfer deleted successfully
+        '404':
+          $ref: '#/components/responses/TransferNotFound'
+  /external_transfer:
+    post:
+      summary: Perform external transfer
+      tags:
+        - Transfers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalTransferInput'
+      responses:
+        '200':
+          description: Transfer successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+  /categorize_transaction/{id}:
+    post:
+      summary: Categorize transaction
+      tags:
+        - Transactions
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategorizeTransactionInput'
+      responses:
+        '200':
+          description: Transaction categorized successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '404':
+          $ref: '#/components/responses/TransactionNotFound'
+  /bulk_categorize_transactions:
+    post:
+      summary: Bulk categorize transactions
+      tags:
+        - Transactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkCategorizeTransactionsInput'
+      responses:
+        '200':
+          description: Transactions categorized successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionsResponse'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+  /transactions_summary:
+    get:
+      summary: Get transactions summary
+      tags:
+        - Transactions
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionsSummaryResponse'
+        '404':
+          $ref: '#/components/responses/NoTransactionsFound'
+
+components:
+  parameters:
+    AccountId:
+      name: id
+      in: path
+      description: ID of the account
+      required: true
+      schema:
+        type: string
+        format: uuid
+    StatementId:
+      name: id
+      in: path
+      description: ID of the account statement to retrieve
+      required: true
+      schema:
+        type: string
+        format: uuid
+    InterestId:
+      name: id
+      in: path
+      description: ID of the overdraft interest to retrieve
+      required: true
+      schema:
+        type: string
+        format: uuid
+    TransferId:
+      name: id
+      in: path
+      description: ID of the transfer to retrieve
+      required: true
+      schema:
+        type: string
+        format: uuid
+    TransactionId:
+      name: id
+      in: path
+      description: ID of the transaction to categorize
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Timestamp:
+      name: timestamp
+      in: path
+      description: Timestamp in ISO 8601 format
+      required: true
+      schema:
+        type: string
+        format: date-time
+  responses:
+    AccountNotFound:
+      description: Account not found
+    StatementNotFound:
+      description: Account statement not found
+    InterestNotFound:
+      description: Overdraft interest not found
+    TransferNotFound:
+      description: Transfer not found
+    TransactionNotFound:
+      description: Transaction not found
+    InvalidRequest:
+      description: Invalid request
+    NoTransactionsFound:
+      description: No transactions found
+  schemas:
+    Account:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        lastName:
+          type: string
+        firstName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        monthlyNetSalary:
+          type: number
+        uniqueAccountNumber:
+          type: string
+        overdraftStatus:
+          type: boolean
+        principalBalance:
+          type: number
+    AccountsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Account'
+    AccountInput:
+      type: object
+      properties:
+        lastName:
+          type: string
+        firstName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        monthlyNetSalary:
+          type: number
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        idAccount:
+          type: string
+          format: uuid
+        transactionAmount:
+          type: number
+        transactionType:
+          type: string
+        reason:
+          type: string
+        effectiveDate:
+          type: string
+          format: date-time
+        registrationDate:
+          type: string
+          format: date-time
+    TransactionInput:
+      type: object
+      properties:
+        idAccount:
+          type: string
+          format: uuid
+        transactionAmount:
+          type: number
+        transactionType:
+          type: string
+        reason:
+          type: string
+    Transfer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        idSenderAccount:
+          type: string
+          format: uuid
+        idReceiverAccount:
+          type: string
+          format: uuid
+        transferAmount:
+          type: number
+        reason:
+          type: string
+        effectiveDate:
+          type: string
+          format: date-time
+        registrationDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+        label:
+          type: string
+        reference:
+          type: string
+    TransferInput:
+      type: object
+      properties:
+        idSenderAccount:
+          type: string
+          format: uuid
+        idReceiverAccount:
+          type: string
+          format: uuid
+        transferAmount:
+          type: number
+        reason:
+          type: string
+    OverdraftInterest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        InterestRateFirstDays:
+          type: number
+        InterestRateAfterDays:
+          type: number
+        modificationDate:
+          type: string
+          format: date-time
+    OverdraftInterestsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/OverdraftInterest'
+    OverdraftInterestInput:
+      type: object
+      properties:
+        InterestRateFirstDays:
+          type: number
+        InterestRateAfterDays:
+          type: number
+    AccountStatement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        idAccount:
+          type: string
+          format: uuid
+        operationMotive:
+          type: string
+        operationAmount:
+          type: number
+        operationType:
+          type: string
+        effective_date:
+          type: string
+          format: date-time
+        principalBalance:
+          type: number
+    AccountStatementsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/AccountStatement'
+    AccountStatementInput:
+      type: object
+      properties:
+        idAccount:
+          type: string
+          format: uuid
+        operationMotive:
+          type: string
+        operationAmount:
+          type: number
+        operationType:
+          type: string
+    WithdrawalInput:
+      type: object
+      properties:
+        idAccount:
+          type: string
+          format: uuid
+        withdrawalAmount:
+          type: number
+    LoansResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          loanId:
+            type: string
+            format: uuid
+          loanAmount:
+            type: number
+          interestRate:
+            type: number
+          startDate:
+            type: string
+            format: date-time
+          endDate:
+            type: string
+            format: date-time
+    InterestsResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          interestId:
+            type: string
+            format: uuid
+          interestRate:
+            type: number
+          modificationDate:
+            type: string
+            format: date-time
+    ExternalTransferInput:
+      type: object
+      properties:
+        idSenderAccount:
+          type: string
+          format: uuid
+        receiverAccountNumber:
+          type: string
+        transferAmount:
+          type: number
+        reason:
+          type: string
+    CategorizeTransactionInput:
+      type: object
+      properties:
+        category:
+          type: string
+    BulkCategorizeTransactionsInput:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              category:
+                type: string
+    TransactionsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Transaction'
+    TransactionsSummaryResponse:
+      type: object
+      properties:
+        totalTransactions:
+          type: number
+        totalAmount:
+          type: number
+
+
+    AccountBalanceResponse:
+      type: object
+      properties:
+        balance:
+          type: number
+        currency:
+          type: string
+          description: Currency of the account balance
+
+    TransfersResponse:
+      type: object
+      properties:
+        transfers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transfer'
+        totalTransfers:
+          type: integer
+          description: Total number of transfers
+

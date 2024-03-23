@@ -2,14 +2,14 @@ package com.hei.bank.controller;
 
 import com.hei.bank.model.AccountStatement;
 import com.hei.bank.service.AccountStatementService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+
+@CrossOrigin(origins = "http://localhost:3000")
+
 
 public class AccountStatementController {
     private final AccountStatementService accountStatementService;
