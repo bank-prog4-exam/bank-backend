@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS account (
     monthly_net_salary DOUBLE PRECISION,
     unique_account_number VARCHAR(20) UNIQUE,
     overdraft_status BOOLEAN,
-    principal_balance DOUBLE PRECISION DEFAULT 0.00
+    principal_balance DOUBLE PRECISION DEFAULT 0.00,
+    last_overdraft_activity TIMESTAMP
 );
 
 CREATE TABLE "transaction" (

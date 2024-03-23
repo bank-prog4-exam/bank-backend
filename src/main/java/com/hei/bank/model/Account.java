@@ -20,4 +20,6 @@ public class Account {
     private String uniqueAccountNumber;
     private Boolean overdraftStatus;
     private Double principalBalance;
+    private Timestamp lastOverdraftActivity;
+
 }

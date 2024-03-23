@@ -1,5 +1,6 @@
 package com.hei.bank.DAO;
 
+import ch.qos.logback.core.util.TimeUtil;
 import com.hei.bank.configuration.ConnectionDB;
 import com.hei.bank.model.Account;
 import com.hei.bank.model.AccountStatement;
@@ -8,6 +9,7 @@ import com.hei.bank.model.Transaction;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.Instant;
 import java.util.*;
 
 @Repository
@@ -37,11 +39,20 @@ public class AccountDAO{
 
             if ("debit".equals(transaction.getTransactionType())) {
                 if (account.getPrincipalBalance() - transaction.getTransactionAmount() >= 0) {
+
                     account.setPrincipalBalance(account.getPrincipalBalance() - transaction.getTransactionAmount());
+
                 } else if(account.getPrincipalBalance() - transaction.getTransactionAmount()<0){
-                    Double loan = (account.getPrincipalBalance() - transaction.getTransactionAmount())*(-1);
-                    Double overdraftAmount = account.getMonthlyNetSalary()/3;
+
+                    double loan = (account.getPrincipalBalance() - transaction.getTransactionAmount())*(-1);
+                    double overdraftAmount = account.getMonthlyNetSalary()/3;
+
                     if (account.getOverdraftStatus().equals(Boolean.TRUE) && loan <= overdraftAmount){
+
+                        Instant instant = Instant.now();
+                        Timestamp now = Timestamp.from(instant);
+
+                        account.setLastOverdraftActivity(now);
                         account.setPrincipalBalance(account.getPrincipalBalance() - transaction.getTransactionAmount());
                     }
                     else throw new  RuntimeException("Your account is not active for overdraft or loan amount permission is too low for this transacion amount");
@@ -64,14 +75,18 @@ public class AccountDAO{
     }
 
     public Map<String, Double> getAccountBalance (Timestamp timestamp, UUID accountId) throws SQLException {
-        Map<String, Double> result = new HashMap<>();
+
         Transaction transaction = new Transaction();
         AccountDAO accountDAO = new AccountDAO();
-        Account account = accountDAO.findById(accountId);
+        OverdraftInterestDAO overdraftInterestDAO = new OverdraftInterestDAO();
+
         List<String> currentTransactionIdList = new ArrayList<>();
+        Map<String, Double> result = new HashMap<>();
+
+        Account account = accountDAO.findById(accountId);
         List<String> transactionIdList = getAllTransaction(accountId);
-        Double loan = 0.0;
-        Double overdraft = 0.0;
+        double loan = 0.00;
+
 
         for (String transactionId : transactionIdList) {
 
@@ -92,17 +107,38 @@ public class AccountDAO{
                         loan = (account.getPrincipalBalance() - transaction.getTransactionAmount())*(-1);
                         Double overdraftAmount = account.getMonthlyNetSalary()/3;
                         account.setPrincipalBalance(overdraftAmount);
-                        overdraft = account.getPrincipalBalance()-loan;
                     }
                 }
             } else {
                 break;
             }
         }
+        if(account.getPrincipalBalance() < 0){
 
-        result.put("principal balance", account.getPrincipalBalance());
-        result.put("pret", loan);
-        result.put("overdraft amount", overdraft);
+            result.put("principalBalance", 0.00);
+            result.put("loan", loan);
+
+            Timestamp lastOverdraftActivityTimestamp = account.getLastOverdraftActivity();
+
+            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+            long timeDifference = currentTimestamp.getTime() - lastOverdraftActivityTimestamp.getTime();
+
+            long daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+
+            List<OverdraftInterest> overdraftInterestList = overdraftInterestDAO.findAll();
+            OverdraftInterest actualOverdraft = overdraftInterestList.get(0);
+            if (daysDifference <= 7 ){
+                result.put("loanInterest", actualOverdraft.getInterestRateFirstDays() * loan);
+            } else {
+                result.put("loanInterest", actualOverdraft.getInterestRateAfterDays() * loan);
+            }
+        }else {
+            result.put("principalBalance", account.getPrincipalBalance());
+            result.put("loan", loan);
+            result.put("loanInterest", 0.00);
+        }
+
 
 
         return result;
