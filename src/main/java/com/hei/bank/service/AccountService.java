@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -42,7 +43,7 @@ public class AccountService implements EntityServices<Account> {
         return accountDAO.getAllTransaction(id);
     }
 
-    public Account getAccountBalance(Timestamp timestamp, UUID accountId) throws SQLException{
+    public Map<String, Double> getAccountBalance(Timestamp timestamp, UUID accountId) throws SQLException{
         return accountDAO.getAccountBalance(timestamp, accountId);
     }
 }

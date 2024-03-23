@@ -8,9 +8,7 @@ import com.hei.bank.model.Transaction;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class AccountDAO{
@@ -65,11 +63,15 @@ public class AccountDAO{
         }
     }
 
-    public Account getAccountBalance (Timestamp timestamp, UUID accountId) throws SQLException {
+    public Map<String, Double> getAccountBalance (Timestamp timestamp, UUID accountId) throws SQLException {
+        Map<String, Double> result = new HashMap<>();
+        Transaction transaction = new Transaction();
         AccountDAO accountDAO = new AccountDAO();
         Account account = accountDAO.findById(accountId);
         List<String> currentTransactionIdList = new ArrayList<>();
         List<String> transactionIdList = getAllTransaction(accountId);
+        Double loan = 0.0;
+        Double overdraft = 0.0;
 
         for (String transactionId : transactionIdList) {
 
@@ -83,13 +85,27 @@ public class AccountDAO{
                 if (currentTransaction.getTransactionType().equals("credit")) {
                     account.setPrincipalBalance(account.getPrincipalBalance() + currentTransaction.getTransactionAmount());
                 } else if (currentTransaction.getTransactionType().equals("debit")) {
-                    account.setPrincipalBalance(account.getPrincipalBalance() - currentTransaction.getTransactionAmount());
+                    if (account.getPrincipalBalance()>=0){
+                        account.setPrincipalBalance(account.getPrincipalBalance() - currentTransaction.getTransactionAmount());
+                    }
+                    else if(account.getPrincipalBalance()<0){
+                        loan = (account.getPrincipalBalance() - transaction.getTransactionAmount())*(-1);
+                        Double overdraftAmount = account.getMonthlyNetSalary()/3;
+                        account.setPrincipalBalance(overdraftAmount);
+                        overdraft = account.getPrincipalBalance()-loan;
+                    }
                 }
             } else {
                 break;
             }
         }
-        return account;
+
+        result.put("principal balance", account.getPrincipalBalance());
+        result.put("pret", loan);
+        result.put("overdraft amount", overdraft);
+
+
+        return result;
     }
 
     public List<String> getAllTransaction(UUID accountId) throws SQLException {
@@ -115,5 +131,4 @@ public class AccountDAO{
 
         return result;
     }
-
 }

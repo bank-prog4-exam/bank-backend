@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -42,7 +43,7 @@ public class AccountController {
     }
 
     @GetMapping("/account_balance/{id}/{timestamp}")
-    public Account getAccountBalance(@PathVariable Timestamp timestamp, @PathVariable UUID id) throws SQLException{
+    public Map<String, Double> getAccountBalance(@PathVariable Timestamp timestamp, @PathVariable UUID id) throws SQLException{
         return accountService.getAccountBalance(timestamp,id);
     }
 }
