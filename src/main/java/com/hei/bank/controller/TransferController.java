@@ -32,4 +32,8 @@ public class TransferController {
     public Transfer save(@RequestBody Transfer toSave) throws SQLException{
         return transferService.save(toSave);
     }
+    @DeleteMapping("/transfer/detete/{id}")
+    public void delete(@PathVariable UUID id )throws SQLException{
+        transferService.delete(id);
+    }
 }

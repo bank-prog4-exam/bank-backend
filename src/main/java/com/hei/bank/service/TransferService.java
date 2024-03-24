@@ -8,26 +8,30 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+
 @AllArgsConstructor
 @Service
-
-public class TransferService implements EntityServices<Transfer> {
+public class TransferService  {
 
     private TransferDAO transferDAO;
 
 
-    @Override
     public List<Transfer> findAll() throws SQLException {
         return transferDAO.findAll();
     }
 
-    @Override
+
     public Transfer findById(UUID id) throws SQLException {
         return transferDAO.findById(id);
     }
 
-    @Override
+
     public Transfer save(Transfer toSave) throws SQLException {
         return transferDAO.save(toSave);
+    }
+
+
+    public void delete(UUID id) throws SQLException {
+        TransferDAO.delete(id);
     }
 }

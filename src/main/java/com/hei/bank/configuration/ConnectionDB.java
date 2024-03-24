@@ -22,7 +22,7 @@ public class ConnectionDB {
         }
     }
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         return this.connection;
     }
 }
