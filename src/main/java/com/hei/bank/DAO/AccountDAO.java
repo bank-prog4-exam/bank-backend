@@ -35,6 +35,8 @@ public class AccountDAO{
     public Account doTransaction(Transaction transaction) {
         try {
             AccountDAO accountDAO = new AccountDAO();
+            TransactionDAO transactionDAO = new TransactionDAO();
+
             Account account = accountDAO.findById(transaction.getIdAccount());
 
             if ("debit".equals(transaction.getTransactionType())) {
@@ -63,10 +65,9 @@ public class AccountDAO{
                 throw new RuntimeException("Invalid transaction type");
             }
 
+            transactionDAO.save(transaction);
             accountDAO.save(account);
 
-            TransactionDAO transactionDAO = new TransactionDAO();
-            transactionDAO.save(transaction);
 
             return account;
         } catch (SQLException e) {
@@ -97,25 +98,22 @@ public class AccountDAO{
             Timestamp currentTransactionTimestamp = currentTransaction.getEffectiveDate();
 
             if (timestamp.after(currentTransactionTimestamp) || timestamp.equals(currentTransactionTimestamp)) {
+                account.setPrincipalBalance(00.0);
                 if (currentTransaction.getTransactionType().equals("credit")) {
                     account.setPrincipalBalance(account.getPrincipalBalance() + currentTransaction.getTransactionAmount());
                 } else if (currentTransaction.getTransactionType().equals("debit")) {
-                    if (account.getPrincipalBalance()>=0){
+
                         account.setPrincipalBalance(account.getPrincipalBalance() - currentTransaction.getTransactionAmount());
-                    }
-                    else if(account.getPrincipalBalance()<0){
-                        loan = (account.getPrincipalBalance() - transaction.getTransactionAmount())*(-1);
-                        Double overdraftAmount = account.getMonthlyNetSalary()/3;
-                        account.setPrincipalBalance(overdraftAmount);
+                        if (account.getPrincipalBalance() < 0){
+                            loan += (account.getPrincipalBalance())*(-1);
+                        }
                     }
                 }
-            } else {
-                break;
-            }
         }
         if(account.getPrincipalBalance() < 0){
 
             result.put("principalBalance", 0.00);
+
             result.put("loan", loan);
 
             Timestamp lastOverdraftActivityTimestamp = account.getLastOverdraftActivity();

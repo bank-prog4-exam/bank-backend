@@ -26,7 +26,7 @@ public class AutoCrudOperation<T> {
         List<String> attributes = getAttributes();
 
         FIND_ALL_QUERY = FIND_ALL_QUERY.replace("{COLUMNS}", String.join(", ", attributes)).replace("{TABLE}", table);
-        System.out.println(FIND_ALL_QUERY);
+
         List<T> result = new ArrayList<>();
 
         try (

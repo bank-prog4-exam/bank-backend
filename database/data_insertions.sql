@@ -5,18 +5,10 @@ VALUES ('5e6f984c-12b2-4b7b-b628-959811ca07b4','Doe', 'John', '1990-05-15', 5000
        ('7b9fb905-dad8-43fa-bfb3-8d72c458337f','Smith', 'Alice', '1985-10-20', 7000.00, 'DEF987654', TRUE),
        ('75dd98d5-eba3-4d14-9ac8-c589477f2970','Johnson', 'Michael', '1982-03-25', 6000.00, 'GHI456789', FALSE);
 
---for "transaction" table
-
-INSERT INTO "transaction" (id_account, transaction_type, transaction_amount, reason, effective_date, registration_date)
-VALUES ('5e6f984c-12b2-4b7b-b628-959811ca07b4', 'deposit', 2000.00, 'Initial deposit', '2024-03-01 10:00:00', NOW()),
-       ('7b9fb905-dad8-43fa-bfb3-8d72c458337f', 'withdrawal', 500.00, 'Groceries', '2024-03-10 15:30:00', NOW()),
-       ('5e6f984c-12b2-4b7b-b628-959811ca07b4', 'ingoing transfer', 3000.00, 'Salary', '2024-03-05 12:00:00', NOW()),
-       ('75dd98d5-eba3-4d14-9ac8-c589477f2970', 'outgoing transfer', 1000.00, 'Rent', '2024-03-15 09:00:00', NOW());
-
 --for overdraft interest table
 
 INSERT INTO overdraft_interest (interest_rate_first_days, interest_rate_after_days, modification_date)
-VALUES (1.0, 2.0, NOW());
+VALUES (0.1, 0.2, NOW());
 
 -- for transfer table
 
