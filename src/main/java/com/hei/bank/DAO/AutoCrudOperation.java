@@ -173,7 +173,7 @@ public class AutoCrudOperation<T> {
     private String getFormattedValue(Object value) {
         if (value == null) {
             return "NULL";
-        } else if (value instanceof String || value instanceof Date) {
+        } else if (value instanceof UUID || value instanceof Date || value instanceof String) {
             return "'" + value + "'";
         } else if (value instanceof List<?> listValue) {
             if (listValue.isEmpty()) {

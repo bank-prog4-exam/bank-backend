@@ -1,6 +1,7 @@
 package com.hei.bank.service;
 
 import com.hei.bank.DAO.TransferDAO;
+import com.hei.bank.model.Account;
 import com.hei.bank.model.Transfer;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,15 @@ public class TransferService  {
     }
 
 
-    public Boolean delete(UUID id) throws SQLException {
-     return    transferDAO.delete(id);
+    public Boolean delete(UUID id) {
+     return transferDAO.delete(id);
+    }
+
+    public List<Account> transfer(Transfer transfer) throws SQLException {
+        return transferDAO.transfer(transfer);
+    }
+
+    public Transfer abortTransfer(UUID transferId) throws SQLException {
+        return transferDAO.abortTransfer(transferId);
     }
 }

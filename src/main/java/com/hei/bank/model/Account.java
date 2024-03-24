@@ -17,9 +17,9 @@ public class Account {
     private String firstName;
     private Timestamp dateOfBirth;
     private Double monthlyNetSalary;
+    private String bankName;
     private String uniqueAccountNumber;
     private Boolean overdraftStatus;
     private Double principalBalance;
     private Timestamp lastOverdraftActivity;
-
 }
