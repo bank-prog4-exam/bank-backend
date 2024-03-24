@@ -1,0 +1,323 @@
+{
+	"info": {
+		"_postman_id": "6ccff6e5-fdcf-468a-aa23-f2567c38606e",
+		"name": "bank_test",
+		"description": "integration test for banking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27877369"
+	},
+	"item": [
+		{
+			"name": "Get All Accounts",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"fa0a00e2-15c1-4d3d-b5b0-99a6e41d68a3\",\r\n  \"accountNumber\": \"1234567890\",\r\n  \"accountType\": \"Checking\",\r\n  \"balance\": 5000.00,\r\n  \"ownerName\": \"John Doe\",\r\n  \"createdAt\": \"2024-03-24T08:00:00.000Z\",\r\n  \"updatedAt\": \"2024-03-24T08:00:00.000Z\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/all_accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"all_accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_account_by_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/account/5e6f984c-12b2-4b7b-b628-959811ca07b4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"5e6f984c-12b2-4b7b-b628-959811ca07b4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_transfert",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/all_transfers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"all_transfers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new_account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"b59f18f3-d632-4abc-b5b2-556cfa7c9379\",\r\n    \"lastName\": \"Doe\",\r\n    \"firstName\": \"John\",\r\n    \"dateOfBirth\": \"1990-05-15\",\r\n    \"monthlyNetSalary\": 5000.00,\r\n    \"uniqueAccountNumber\": \"1234567890\",\r\n    \"overdraftStatus\": true,\r\n    \"principalBalance\": 5000.00,\r\n    \"lastOverdraftActivity\": \"2024-03-20T08:00:00.000Z\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/new_account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"new_account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_transfert_by_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/transfer/80988a9c-7468-4347-9b9f-2296ff3475e9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transfer",
+						"80988a9c-7468-4347-9b9f-2296ff3475e9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new_transfert",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"fa0a00e2-15c1-4d3d-b5b0-99a6e41d68a3\",\r\n  \"idSenderAccount\": \"123e4567-e89b-12d3-a456-556642440000\",\r\n  \"idReceiverAccount\": \"123e4567-e89b-12d3-a456-556642440001\",\r\n  \"transferAmount\": 100.00,\r\n  \"reason\": \"Payment\",\r\n  \"effectiveDate\": \"2024-03-24T08:00:00.000Z\",\r\n  \"registrationDate\": \"2024-03-24T08:00:00.000Z\",\r\n  \"status\": \"Completed\",\r\n  \"reference\": \"REF123456\",\r\n  \"label\": \"Transfer\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/new_transfer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"new_transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete_transfert",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/transfer/fa0a00e2-15c1-4d3d-b5b0-99a6e41d68a3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transfer",
+						"fa0a00e2-15c1-4d3d-b5b0-99a6e41d68a3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new_transaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"fa0a00e2-15c1-4d3d-b5b0-99a6e41d68a3\",\r\n  \"idAccount\": \"123e4567-e89b-12d3-a456-556642440000\",\r\n  \"transactionAmount\": 50.00,\r\n  \"transactionType\": \"Debit\",\r\n  \"reason\": \"Withdrawal\",\r\n  \"effectiveDate\": \"2024-03-24T08:00:00.000Z\",\r\n  \"registrationDate\": \"2024-03-24T08:00:00.000Z\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/new_transaction",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"new_transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_transaction_by_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/transaction/f78d3e70-3e99-4660-a574-f9f5d1558c7f",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transaction",
+						"f78d3e70-3e99-4660-a574-f9f5d1558c7f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_transaction",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/all_transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"all_transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all_overdrafts_interest",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"fa0a00e2-15c1-4d3d-b5b0-99a6e41d68a3\",\r\n  \"interestRateFirstDays\": 0.05,\r\n  \"interestRateAfterDays\": 0.10,\r\n  \"modificationDate\": \"2024-03-24T08:00:00.000Z\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/all_overdraftInterests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"all_overdraftInterests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "overdraft_interest by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/overdraftInterest/3fb00f74-e3c2-43e9-9864-bf92c4a27e37",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"overdraftInterest",
+						"3fb00f74-e3c2-43e9-9864-bf92c4a27e37"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new_ovedrafts_interest",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"3fb00f74-e3c2-43e9-9864-bf92c4a27e57\",\r\n    \"modificationDate\": \"2024-02-24T13:22:44.645+00:00\",\r\n    \"interestRateFirstDays\": 0.1,\r\n    \"interestRateAfterDays\": 0.2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/new_overdraftInterest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"new_overdraftInterest"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
