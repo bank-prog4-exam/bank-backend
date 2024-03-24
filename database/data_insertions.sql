@@ -1,9 +1,9 @@
 --for account table
 
 INSERT INTO account (id, last_name, first_name, date_of_birth, monthly_net_salary, unique_account_number, overdraft_status,last_overdraft_activity)
-VALUES ('5e6f984c-12b2-4b7b-b628-959811ca07b4','Doe', 'John', '1990-05-15', 5000.00, 'ABC123456', FALSE, '2024-03-19 10:15:00'),
-       ('7b9fb905-dad8-43fa-bfb3-8d72c458337f','Smith', 'Alice', '1985-10-20', 7000.00, 'DEF987654', TRUE, '2024-03-2à 10:15:00'),
-       ('75dd98d5-eba3-4d14-9ac8-c589477f2970','Johnson', 'Michael', '1982-03-25', 6000.00, 'GHI456789', FALSE), '2024-03-21 10:15:00';
+VALUES ('5e6f984c-12b2-4b7b-b628-959811ca07b4','Doe', 'John', '1990-05-15', 5000.00, 'ABC123456', FALSE, now()),
+       ('7b9fb905-dad8-43fa-bfb3-8d72c458337f','Smith', 'Alice', '1985-10-20', 7000.00, 'DEF987654', TRUE, now()),
+       ('75dd98d5-eba3-4d14-9ac8-c589477f2970','Johnson', 'Michael', '1982-03-25', 6000.00, 'GHI456789', FALSE,now());
 
 --for "transaction" table
 
