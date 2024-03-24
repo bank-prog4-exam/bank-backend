@@ -31,7 +31,7 @@ public class TransferService  {
     }
 
 
-    public void delete(UUID id) throws SQLException {
-        TransferDAO.delete(id);
+    public Boolean delete(UUID id) throws SQLException {
+     return    transferDAO.delete(id);
     }
 }

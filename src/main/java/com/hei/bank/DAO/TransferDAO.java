@@ -32,15 +32,19 @@ public class TransferDAO {
         return AutoCrudOperation.save(transfer);
     }
 
-    public static void delete(UUID id) throws SQLException {
+    public boolean delete(UUID id) {
         String sql = "DELETE FROM transfer WHERE id = ?";
-        try (Connection connection = ConnectionDB.getConnection();
+        try (Connection connection = new ConnectionDB().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setObject(1, id);
-            statement.executeUpdate();
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
         } catch (SQLException ex) {
-            throw ex;
+            ex.printStackTrace();
+            return false;
         }
     }
+
+
 
 }
