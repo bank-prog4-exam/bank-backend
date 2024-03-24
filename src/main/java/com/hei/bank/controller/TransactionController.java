@@ -2,7 +2,6 @@ package com.hei.bank.controller;
 
 import com.hei.bank.model.Account;
 import com.hei.bank.model.Transaction;
-import com.hei.bank.service.AccountService;
 import com.hei.bank.service.TransactionService;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,5 +30,14 @@ public class TransactionController {
     @PostMapping("/new_transaction")
     public Transaction save(@RequestBody Transaction toSave) throws SQLException{
         return transactionService.save(toSave);
+    }
+
+    @PutMapping("/do_transaction")
+    public Account doTransaction(@RequestBody Transaction transaction) throws SQLException {
+        return transactionService.doTransaction(transaction);
+    }
+    @GetMapping("/all_transactions/{id}")
+    public List<String> getAllTransaction(@PathVariable UUID id) throws SQLException{
+        return transactionService.getAllTransaction(id);
     }
 }

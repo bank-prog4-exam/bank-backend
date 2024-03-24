@@ -2,7 +2,6 @@ package com.hei.bank.service;
 
 import com.hei.bank.DAO.AccountDAO;
 import com.hei.bank.model.Account;
-import com.hei.bank.model.Transaction;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -34,15 +33,6 @@ public class AccountService implements EntityServices<Account> {
     public Account save(Account toSave) throws SQLException {
         return accountDAO.save(toSave);
     }
-
-    public Account doTransaction(Transaction transaction) throws SQLException{
-        return accountDAO.doTransaction(transaction);
-    }
-
-    public List<String> getAllTransaction(UUID id) throws SQLException{
-        return accountDAO.getAllTransaction(id);
-    }
-
     public Map<String, Double> getAccountBalance(Timestamp timestamp, UUID accountId) throws SQLException{
         return accountDAO.getAccountBalance(timestamp, accountId);
     }

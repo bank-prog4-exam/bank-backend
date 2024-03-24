@@ -34,15 +34,6 @@ public class AccountController {
         return accountService.save(toSave);
     }
 
-    @PutMapping("/do_transaction")
-    public Account doTransaction(@RequestBody Transaction transaction) throws SQLException {
-        return accountService.doTransaction(transaction);
-    }
-    @GetMapping("/all_transactions/{id}")
-    public List<String> getAllTransaction(@PathVariable UUID id) throws SQLException{
-        return accountService.getAllTransaction(id);
-    }
-
     @GetMapping("/account_balance/{id}/{timestamp}")
     public Map<String, Double> getAccountBalance(@PathVariable Timestamp timestamp, @PathVariable UUID id) throws SQLException{
         return accountService.getAccountBalance(timestamp,id);

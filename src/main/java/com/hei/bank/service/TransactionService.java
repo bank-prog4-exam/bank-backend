@@ -1,6 +1,7 @@
 package com.hei.bank.service;
 
 import com.hei.bank.DAO.TransactionDAO;
+import com.hei.bank.model.Account;
 import com.hei.bank.model.Transaction;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +30,13 @@ public class TransactionService implements EntityServices<Transaction>{
     @Override
     public Transaction save(Transaction toSave) throws SQLException {
         return transactionDAO.save(toSave);
+    }
+
+    public Account doTransaction(Transaction transaction) throws SQLException{
+        return transactionDAO.doTransaction(transaction);
+    }
+
+    public List<String> getAllTransaction(UUID id) throws SQLException{
+        return transactionDAO.getAllTransaction(id);
     }
 }
