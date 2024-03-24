@@ -17,6 +17,7 @@ public class Transaction {
     private Double transactionAmount;
     private String transactionType;
     private String reason;
+    private String reference;
     private Timestamp effectiveDate;
     private Timestamp registrationDate;
 }

@@ -69,13 +69,14 @@ public class TransferDAO {
 
                 String creditorTransactionReason = "transfer of " + transfer.getTransferAmount() + "Ar to " + debtor.getFirstName() + " " + debtor.getLastName();
                 String debtorTransactionReason = "transfer of " + transfer.getTransferAmount() + "Ar from " + creditor.getFirstName() + " " + creditor.getLastName();
-
+                String reference = transfer.getReference();
                 Transaction transactionCreditor = new Transaction(
                         UUID.randomUUID(),
                         creditor.getId(),
                         transfer.getTransferAmount(),
                         "debit",
                         creditorTransactionReason,
+                        transfer.getReference() + "01",
                         transfer.getEffectiveDate(),
                         now
                 );
@@ -89,6 +90,7 @@ public class TransferDAO {
                         transfer.getTransferAmount(),
                         "credit",
                         debtorTransactionReason,
+                        reference + "02",
                         transfer.getEffectiveDate(),
                         now
                 );

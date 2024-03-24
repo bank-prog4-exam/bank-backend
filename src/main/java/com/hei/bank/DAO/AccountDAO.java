@@ -1,12 +1,14 @@
 package com.hei.bank.DAO;
 
 import com.hei.bank.model.Account;
+import com.hei.bank.model.AccountStatement;
 import com.hei.bank.model.OverdraftInterest;
 import com.hei.bank.model.Transaction;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 @Repository
 public class AccountDAO{
@@ -39,6 +41,8 @@ public class AccountDAO{
         double loan = 0.00;
 
 
+        account.setPrincipalBalance(00.0);
+
         for (String transactionId : transactionIdList) {
 
             TransactionDAO transactionDAO1 = new TransactionDAO();
@@ -47,9 +51,8 @@ public class AccountDAO{
             Timestamp currentTransactionTimestamp = currentTransaction.getEffectiveDate();
 
             if (timestamp.after(currentTransactionTimestamp) || timestamp.equals(currentTransactionTimestamp)) {
-                account.setPrincipalBalance(00.0);
                 if (currentTransaction.getTransactionType().equals("credit")) {
-                    account.setPrincipalBalance((account.getPrincipalBalance() + currentTransaction.getTransactionAmount())/2);
+                    account.setPrincipalBalance(account.getPrincipalBalance() + currentTransaction.getTransactionAmount());
                 } else if (currentTransaction.getTransactionType().equals("debit")) {
 
                         account.setPrincipalBalance(account.getPrincipalBalance() - currentTransaction.getTransactionAmount());
@@ -86,5 +89,45 @@ public class AccountDAO{
             result.put("loanInterest", 0.00);
         }
         return result;
+    }
+
+    public List<AccountStatement> accountStatements(Date startDate, Date endDate, UUID accountID) throws SQLException {
+        TransactionDAO transactionDAO = new TransactionDAO();
+        List<AccountStatement> accountStatements = new ArrayList<>();
+
+        List<String> transactionIdList = transactionDAO.getAllTransaction(accountID);
+        for (String transactionId : transactionIdList) {
+
+            TransactionDAO transactionDAO1 = new TransactionDAO();
+            Transaction transaction = transactionDAO1.findById(UUID.fromString(transactionId));
+            Timestamp date = transaction.getEffectiveDate();
+
+            if ((date.equals(startDate) || date.after(startDate)) && (date.equals(endDate) || date.before(endDate))){
+                Double creditAmount = 0.00;
+                Double debitAmount = 0.00;
+
+                if (transaction.getTransactionType().equals("debit")) {
+                    debitAmount = transaction.getTransactionAmount();
+                } else if (transaction.getTransactionType().equals("credit")) {
+                    creditAmount = transaction.getTransactionAmount();
+                }
+                Map<String, Double> accountBalance = getAccountBalance(transaction.getEffectiveDate(), accountID);
+                AccountStatement currentAccountStatement = new AccountStatement(
+                        UUID.randomUUID(),
+                        accountID,
+                        transaction.getEffectiveDate(),
+                        transaction.getReference(),
+                        transaction.getReason(),
+                        creditAmount,
+                        debitAmount,
+                        accountBalance.get("principalBalance")
+                );
+                accountStatements.add(currentAccountStatement);
+            }
+        }
+        if (accountStatements.isEmpty()){
+            System.out.println("no transaction from "+ startDate + " to "+ endDate);
+        }
+        return accountStatements;
     }
 }

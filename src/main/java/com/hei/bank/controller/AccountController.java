@@ -1,6 +1,7 @@
 package com.hei.bank.controller;
 
 import com.hei.bank.model.Account;
+import com.hei.bank.model.AccountStatement;
 import com.hei.bank.model.Transaction;
 import com.hei.bank.service.AccountService;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +38,9 @@ public class AccountController {
     @GetMapping("/account_balance/{id}/{timestamp}")
     public Map<String, Double> getAccountBalance(@PathVariable Timestamp timestamp, @PathVariable UUID id) throws SQLException{
         return accountService.getAccountBalance(timestamp,id);
+    }
+    @GetMapping("/account_statement/{accountId}")
+    public List<AccountStatement> accountStatements(@RequestParam Timestamp startDate,@RequestParam Timestamp endDate,@PathVariable UUID accountId) throws SQLException {
+        return accountService.accountStatements(startDate,endDate,accountId);
     }
 }

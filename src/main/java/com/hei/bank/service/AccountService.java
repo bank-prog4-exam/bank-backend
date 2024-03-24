@@ -2,9 +2,11 @@ package com.hei.bank.service;
 
 import com.hei.bank.DAO.AccountDAO;
 import com.hei.bank.model.Account;
+import com.hei.bank.model.AccountStatement;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -35,5 +37,9 @@ public class AccountService implements EntityServices<Account> {
     }
     public Map<String, Double> getAccountBalance(Timestamp timestamp, UUID accountId) throws SQLException{
         return accountDAO.getAccountBalance(timestamp, accountId);
+    }
+
+    public List<AccountStatement> accountStatements(Timestamp startDate, Timestamp endDate, UUID accountId) throws SQLException {
+        return accountDAO.accountStatements(startDate,endDate,accountId);
     }
 }

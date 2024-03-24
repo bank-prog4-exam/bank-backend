@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS "transaction" (
     transaction_amount DOUBLE PRECISION,
     transaction_type VARCHAR(50),
     reason VARCHAR(150),
+    reference VARCHAR(50) UNIQUE,
     effective_date TIMESTAMP,
     registration_date TIMESTAMP,
     FOREIGN KEY (id_account) REFERENCES account(id)
@@ -55,10 +56,11 @@ CREATE TABLE IF NOT EXISTS transfer (
 CREATE TABLE IF NOT EXISTS account_statement (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     id_account UUID,
+    statement_date TIMESTAMP,
+    reference VARCHAR(50),
     operation_motive VARCHAR(150),
-    operation_amount DOUBLE PRECISION,
-    operation_type VARCHAR(50),
-    effective_date TIMESTAMP,
-    principal_balance DOUBLE PRECISION,
+    credit_amount DOUBLE PRECISION,
+    debit_amount DOUBLE PRECISION,
+    balance DOUBLE PRECISION,
     FOREIGN KEY (id_account) REFERENCES account(id)
 );
