@@ -2,7 +2,6 @@ package com.hei.bank.controller;
 
 import com.hei.bank.model.OverdraftInterest;
 import com.hei.bank.service.OverdraftInterestService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;

@@ -100,7 +100,7 @@ public class AccountDAO{
             if (timestamp.after(currentTransactionTimestamp) || timestamp.equals(currentTransactionTimestamp)) {
                 account.setPrincipalBalance(00.0);
                 if (currentTransaction.getTransactionType().equals("credit")) {
-                    account.setPrincipalBalance(account.getPrincipalBalance() + currentTransaction.getTransactionAmount());
+                    account.setPrincipalBalance((account.getPrincipalBalance() + currentTransaction.getTransactionAmount())/2);
                 } else if (currentTransaction.getTransactionType().equals("debit")) {
 
                         account.setPrincipalBalance(account.getPrincipalBalance() - currentTransaction.getTransactionAmount());

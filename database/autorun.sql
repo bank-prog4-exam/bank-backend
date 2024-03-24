@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS account (
     last_overdraft_activity TIMESTAMP
 );
 
-CREATE TABLE "transaction" (
+CREATE TABLE IF NOT EXISTS "transaction" (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     id_account UUID,
     transaction_amount DOUBLE PRECISION,
@@ -29,14 +29,14 @@ CREATE TABLE "transaction" (
     FOREIGN KEY (id_account) REFERENCES account(id)
 );
 
-CREATE TABLE overdraft_interest (
+CREATE TABLE IF NOT EXISTS overdraft_interest (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     interest_rate_first_days DOUBLE PRECISION,
     interest_rate_after_days DOUBLE PRECISION,
     modification_date TIMESTAMP
 );
 
-CREATE TABLE transfer (
+CREATE TABLE IF NOT EXISTS transfer (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     id_sender_account UUID,
     id_receiver_account UUID,
@@ -51,7 +51,7 @@ CREATE TABLE transfer (
     FOREIGN KEY (id_receiver_account) REFERENCES account(id)
 );
 
-CREATE TABLE account_statement (
+CREATE TABLE IF NOT EXISTS account_statement (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     id_account UUID,
     operation_motive VARCHAR(150),
