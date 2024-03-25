@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+@RestController
 @CrossOrigin(origins = "http://localhost:3000")
 
 
