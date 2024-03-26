@@ -10,14 +10,14 @@ import java.sql.SQLException;
 public class ConnectionDB {
     private Connection connection;
 
-    public ConnectionDB(){
-        try{
+    public ConnectionDB() {
+        try {
             String dbUrl = System.getenv("DB_URL");
             String dbUser = System.getenv("DB_USER");
             String dbPassword = System.getenv("DB_PASSWORD");
 
             this.connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

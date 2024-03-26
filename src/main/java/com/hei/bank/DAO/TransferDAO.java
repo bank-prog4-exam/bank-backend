@@ -30,17 +30,81 @@ public class TransferDAO {
     }
 
     public Transfer save(Transfer transfer) {
-        AutoCrudOperation<Transfer> AutoCrudOperation = new AutoCrudOperation<>(Transfer.class);
-        return AutoCrudOperation.save(transfer);
+        AutoCrudOperation<Transfer> autoCrudOperation = new AutoCrudOperation<>(Transfer.class);
+
+        try {
+            Transfer savedTransfer = autoCrudOperation.save(transfer);
+            updateAccountBalance(transfer.getIdSenderAccount(), -transfer.getTransferAmount());
+            updateAccountBalance(transfer.getIdReceiverAccount(), transfer.getTransferAmount());
+
+            return savedTransfer;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
-    public boolean delete(UUID id) {
-        String sql = "DELETE FROM transfer WHERE id = ?";
+    private void updateAccountBalance(UUID accountId, double amount) throws SQLException {
+        String sql = "UPDATE account SET principal_balance = principal_balance + ? WHERE id = ?";
+
         try (Connection connection = new ConnectionDB().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setObject(1, id);
-            int rowsAffected = statement.executeUpdate();
-            return rowsAffected > 0;
+            statement.setDouble(1, amount);
+            statement.setObject(2, accountId);
+            statement.executeUpdate();
+        }
+    }
+
+
+    public boolean delete(UUID id) {
+        String sql = "SELECT id_sender_account, id_receiver_account, transfer_amount FROM transfer WHERE id = ?";
+        String updateSenderSql = "UPDATE account SET principal_balance = principal_balance + ? WHERE id = ?";
+        String updateReceiverSql = "UPDATE account SET principal_balance = principal_balance - ? WHERE id = ?";
+
+        try (Connection connection = new ConnectionDB().getConnection();
+             PreparedStatement selectStatement = connection.prepareStatement(sql);
+             PreparedStatement updateSenderStatement = connection.prepareStatement(updateSenderSql);
+             PreparedStatement updateReceiverStatement = connection.prepareStatement(updateReceiverSql)) {
+
+            connection.setAutoCommit(false);
+
+            selectStatement.setObject(1, id);
+            ResultSet resultSet = selectStatement.executeQuery();
+            if (!resultSet.next()) {
+
+                return false;
+            }
+            UUID senderAccountId = resultSet.getObject("id_sender_account", UUID.class);
+            UUID receiverAccountId = resultSet.getObject("id_receiver_account", UUID.class);
+            double transferAmount = resultSet.getDouble("transfer_amount");
+
+
+            updateSenderStatement.setDouble(1, transferAmount);
+            updateSenderStatement.setObject(2, senderAccountId);
+            int senderRowsAffected = updateSenderStatement.executeUpdate();
+
+
+            updateReceiverStatement.setDouble(1, transferAmount);
+            updateReceiverStatement.setObject(2, receiverAccountId);
+            int receiverRowsAffected = updateReceiverStatement.executeUpdate();
+
+            if (senderRowsAffected > 0 && receiverRowsAffected > 0) {
+                String deleteSql = "DELETE FROM transfer WHERE id = ?";
+                try (PreparedStatement deleteStatement = connection.prepareStatement(deleteSql)) {
+                    deleteStatement.setObject(1, id);
+                    int deleteRowsAffected = deleteStatement.executeUpdate();
+                    if (deleteRowsAffected > 0) {
+                        connection.commit();
+                        return true;
+                    } else {
+                        connection.rollback();
+                        return false;
+                    }
+                }
+            } else {
+                connection.rollback();
+                return false;
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
