@@ -3,9 +3,13 @@ package com.hei.bank.service;
 import com.hei.bank.DAO.TransactionDAO;
 import com.hei.bank.model.Account;
 import com.hei.bank.model.Transaction;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,5 +42,19 @@ public class TransactionService implements EntityServices<Transaction>{
 
     public List<String> getAllTransaction(UUID id) throws SQLException{
         return transactionDAO.getAllTransaction(id);
+    }
+
+    @Scheduled(fixedRate = 1000)
+    public void autoDoTransaction() throws SQLException {
+        List<Transaction> transactionList = transactionDAO.findAll();
+        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
+
+        for (Transaction transaction : transactionList){
+            LocalDateTime effectiveDate = transaction.getEffectiveDate().toLocalDateTime().withSecond(0).withNano(0); // Ignore seconds and nanoseconds
+
+            if (effectiveDate.equals(now)) {
+                doTransaction(transaction);
+            }
+        }
     }
 }

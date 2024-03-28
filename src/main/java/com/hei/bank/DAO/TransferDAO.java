@@ -8,10 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Repository
 public class TransferDAO {
@@ -56,6 +54,17 @@ public class TransferDAO {
         Account debtor = accountDAO1.findById(transfer.getIdReceiverAccount());
         Timestamp now = Timestamp.from(Instant.now());
 
+        Timestamp effectiveDate = transfer.getEffectiveDate();
+
+
+        //Condition 48 heures
+        if(!creditor.getBankName().equals(debtor.getBankName())){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(effectiveDate.getTime());
+            calendar.add(Calendar.DAY_OF_MONTH, 2);
+            effectiveDate = new Timestamp(calendar.getTimeInMillis());
+        }
+
         if (creditor.equals(debtor)) {
             throw new RuntimeException("Sender and Receiver cannot be the same person");
         } else if (transfer.getStatus().equals("aborted")) {
@@ -70,6 +79,7 @@ public class TransferDAO {
                 String creditorTransactionReason = "transfer of " + transfer.getTransferAmount() + "Ar to " + debtor.getFirstName() + " " + debtor.getLastName();
                 String debtorTransactionReason = "transfer of " + transfer.getTransferAmount() + "Ar from " + creditor.getFirstName() + " " + creditor.getLastName();
                 String reference = transfer.getReference();
+
                 Transaction transactionCreditor = new Transaction(
                         UUID.randomUUID(),
                         creditor.getId(),
@@ -77,7 +87,7 @@ public class TransferDAO {
                         "debit",
                         creditorTransactionReason,
                         transfer.getReference() + "01",
-                        transfer.getEffectiveDate(),
+                        effectiveDate,
                         now
                 );
 
@@ -91,16 +101,20 @@ public class TransferDAO {
                         "credit",
                         debtorTransactionReason,
                         reference + "02",
-                        transfer.getEffectiveDate(),
+                        effectiveDate,
                         now
                 );
-                TransactionDAO transactionDAO1 = new TransactionDAO();
-                TransferDAO transferDAO = new TransferDAO();
 
-                transfer.setStatus("completed");
 
-                transferDAO.save(transfer);
-                transactionDAO1.doTransaction(transactionDebtor);
+                    TransactionDAO transactionDAO1 = new TransactionDAO();
+                    TransferDAO transferDAO = new TransferDAO();
+
+                    transfer.setStatus("completed");
+
+                    transferDAO.save(transfer);
+                    transactionDAO1.doTransaction(transactionDebtor);
+
+
 
                 return Arrays.asList(creditor, debtor);
             } else {
