@@ -25,8 +25,42 @@ public class TransactionDAO {
     }
 
     public Transaction save(Transaction transaction) {
-        AutoCrudOperation<Transaction> AutoCrudOperation = new AutoCrudOperation<>(Transaction.class);
-        return AutoCrudOperation.save(transaction);
+        try{
+            AccountDAO accountDAO = new AccountDAO();
+            AutoCrudOperation<Transaction> AutoCrudOperation = new AutoCrudOperation<>(Transaction.class);
+            Account account = accountDAO.findById(transaction.getIdAccount());
+
+            if ("debit".equals(transaction.getTransactionType())) {
+                if (account.getPrincipalBalance() - transaction.getTransactionAmount() >= 0) {
+
+                    account.setPrincipalBalance(account.getPrincipalBalance() - transaction.getTransactionAmount());
+
+                } else if(account.getPrincipalBalance() - transaction.getTransactionAmount()<0){
+
+                    double loan = (account.getPrincipalBalance() - transaction.getTransactionAmount())*(-1);
+                    double overdraftAmount = account.getMonthlyNetSalary()/3;
+
+                    if (account.getOverdraftStatus().equals(Boolean.TRUE) && loan <= overdraftAmount){
+
+                        Instant instant = Instant.now();
+                        Timestamp now = Timestamp.from(instant);
+
+                        account.setLastOverdraftActivity(now);
+                        account.setPrincipalBalance(account.getPrincipalBalance() - transaction.getTransactionAmount());
+                    }
+                    else throw new  RuntimeException("Your account is not active for overdraft or loan amount permission is too low for this transacion amount");
+                }
+            } else if ("credit".equals(transaction.getTransactionType())) {
+                account.setPrincipalBalance(account.getPrincipalBalance() + transaction.getTransactionAmount());
+            } else {
+                throw new RuntimeException("Invalid transaction type");
+            }
+            accountDAO.save(account);
+            return AutoCrudOperation.save(transaction);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //==================================Do transaction==================================
@@ -36,6 +70,7 @@ public class TransactionDAO {
             TransactionDAO transactionDAO = new TransactionDAO();
 
             Account account = accountDAO.findById(transaction.getIdAccount());
+
 
             if ("debit".equals(transaction.getTransactionType())) {
                 if (account.getPrincipalBalance() - transaction.getTransactionAmount() >= 0) {
